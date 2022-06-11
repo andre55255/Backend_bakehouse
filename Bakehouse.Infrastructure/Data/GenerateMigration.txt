@@ -1,0 +1,1 @@
+﻿Add-Migration NomeDaMigration -Project Bakehouse.Infrastructure -o Data/Migrations
