@@ -10,6 +10,7 @@ namespace Bakehouse.Infrastructure.Data.Context
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
     {
         public DbSet<Configuration> Configurations { get; set; }
+        public DbSet<GenericType> GenericTypes { get; set; }
         public DbSet<Log> Logs { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> opt) : base(opt)
@@ -30,6 +31,7 @@ namespace Bakehouse.Infrastructure.Data.Context
             // Config entities/tables
             builder.ApplyConfiguration(new ApplicationUserConfiguration());
             builder.ApplyConfiguration(new ConfigurationConfiguration());
+            builder.ApplyConfiguration(new GenericTypeConfiguration());
             builder.ApplyConfiguration(new LogConfiguration());
         }
     }

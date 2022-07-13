@@ -10,6 +10,7 @@ namespace Bakehouse.API.Extensions
         {
             services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
             services.AddScoped<IConfigurationRepository, ConfigurationRepository>();
+            services.AddScoped<IGenericTypeRepository, GenericTypeRepository>();
             services.AddScoped<ILogRepository, LogRepository>();
 
             return services;

@@ -13,6 +13,27 @@
         public static string ErrorParamNotFound = "Parâmetro não informado na requisição";
     }
 
+    public static class ConstantsMessagesGenericType
+    {
+        // Error
+        public static string ErrorGenericTypeAdd = "Erro ao adicionar generic type";
+        public static string ErrorGenericTypeSave = "Erro ao salvar generic type";
+        public static string ErrorGenericTypeFindById = "Erro ao buscar generic type por id";
+        public static string ErrorGenericTypeFindByToken = "Erro ao buscar lista de generic types por token";
+        public static string ErrorGenericTypeFindAll = "Erro ao buscar lista de generic type";
+        public static string ErrorGenericTypeFindAllGrouped = "Erro ao buscar lista de generic type agrupados";
+        public static string ErrorGenericTypeNotFound = "Generic type não encontrado";
+        public static string ErrorGenericTypeDbEmpty = "Não há nenhum tipo genérico registrado no banco de dados";
+        public static string ErrorGenericTypeUpdate = "Erro ao atualizar generic type no banco de dados";
+        public static string ErrorGenericTypePrepare = "Erro ao preparar tela de salvar";
+        public static string ErrorGenericTypeDelete = "Erro ao deletar generic type no banco de dados";
+
+        // Success
+        public static string SuccessGenericTypeCreate = "Generic Type criado com sucesso";
+        public static string SuccessGenericTypeUpdate = "Generic Type alterado com sucesso";
+        public static string SuccessGenericTypeDelete = "Generic Type deletado com sucesso";
+    }
+
     public static class ConstantsMessageConfiguration
     {
         // Error

@@ -28,6 +28,10 @@ namespace Bakehouse.Infrastructure.ServicesImpl
         {
             try
             {
+                Configuration hasConfigWithToken = await _configRepo.FindByTokenAsync(config.Token);
+                if (hasConfigWithToken is not null)
+                    return Result.Fail(ConstantsMessageConfiguration.ErrorConfigNotFound);
+
                 config.Id = 0;
                 Configuration configSave = _mapper.Map<Configuration>(config);
 

@@ -10,6 +10,7 @@ namespace Bakehouse.API.Extensions
         {
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IConfigurationService, ConfigurationService>();
+            services.AddScoped<IGenericTypeService, GenericTypeService>();
             services.AddScoped<ILogService, LogService>();
             services.AddScoped<ISendMailService, SendMailService>();
 

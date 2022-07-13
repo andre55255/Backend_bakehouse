@@ -29,7 +29,7 @@ namespace Bakehouse.API.Controllers
         /// <summary>
         /// Save - Método para criar/editar configuração no banco, passar dados no body. Id=-1 para inserir e para editar passar o id da config 
         /// </summary>
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("Save")]
         public async Task<IActionResult> SaveConfiguration([FromBody] ConfigurationVO model)
@@ -97,7 +97,7 @@ namespace Bakehouse.API.Controllers
         /// <summary>
         /// GetAll - Método para listar todas as configurações no banco de dados, sem parâmetros
         /// </summary>
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("GetAll")]
         public async Task<IActionResult> GetAllConfiguration()
@@ -133,7 +133,7 @@ namespace Bakehouse.API.Controllers
         /// <summary>
         /// GetById - Método para buscar uma configuração por id, passar parâmetro pela query, ?id=int
         /// </summary>
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("GetById")]
         public async Task<IActionResult> GetByIdConfiguration([FromQuery] int? id)
@@ -176,7 +176,7 @@ namespace Bakehouse.API.Controllers
         /// <summary>
         /// GetById - Método para buscar uma configuração por id, passar parâmetro pela query, ?token=string
         /// </summary>
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("GetByToken")]
         public async Task<IActionResult> GetByTokenConfiguration([FromQuery] string token)
@@ -212,7 +212,7 @@ namespace Bakehouse.API.Controllers
         /// <summary>
         /// Delete - Método para deletar uma configuração por id ou por token, informar parâmetros pela query, ?id=int ou ?token=string. Caso informe os dois será excluído por id
         /// </summary>
-        [Authorize(Roles = "ADMIN")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         [Route("Delete")]
         public async Task<IActionResult> DeleteConfiguration([FromQuery] int? id, string token)

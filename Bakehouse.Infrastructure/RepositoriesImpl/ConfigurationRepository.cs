@@ -157,7 +157,8 @@ namespace Bakehouse.Infrastructure.RepositoriesImpl
                 if (save == null)
                     return Result.Fail(ConstantsMessageConfiguration.ErrorConfigNotFound);
 
-                save.UpdatedAt = DateTime.Now;
+                configuration.UpdatedAt = DateTime.Now;
+                configuration.CreatedAt = save.CreatedAt;
 
                 _mapper.Map(configuration, save);
                 await _db.SaveChangesAsync();
