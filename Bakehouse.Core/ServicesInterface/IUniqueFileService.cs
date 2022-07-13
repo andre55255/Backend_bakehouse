@@ -11,8 +11,8 @@ namespace Bakehouse.Core.ServicesInterface
 
         public Result SaveOneFileBase64(string base64, string entityName, string id, string nameFile);
 
-        public FileVO GetOneFileUrl(string entityName, string id, string nameFile);
+        public FileVO GetOneFileUrl(string entityName, string id, string nameFile, bool defaultImage = false);
 
-        public Task<FileVO> GetOneFileBase64(string entityName, string id, string nameFile);
+        public Task<FileVO> GetOneFileBase64(string entityName, string id, string nameFile, bool defaultImage = false);
     }
 }

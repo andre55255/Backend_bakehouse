@@ -13,6 +13,22 @@
         public static string ErrorParamNotFound = "Parâmetro não informado na requisição";
     }
 
+    public static class ConstantsMessagesFileService
+    {
+        // Error
+        public static string ErrorConvertAndSaveBase64Directory = "Erro ao desconverter arquivo base64 e salvar no diretório: ";
+        public static string ErrorBase64NotFound = "Erro base64 não encontrado para salvar, entidade: ";
+        public static string ErrorSaveOneFileGeneric = "Falha ao salvar arquivo, entidade: ";
+        public static string ErrorListSaveOneFileGeneric = "Falha ao salvar uma lista de arquivos, entidade: ";
+        public static string ErrorDeleteOneFile = "Falha ao deletar arquivo, entidade: ";
+        public static string ErrorVerifyFileExistsAndDelete = "Falha ao verificar se arquivo existe e deletar ele";
+        public static string ErrorGetFileBase64 = "Falha ao pegar arquivo do diretório e disponibilizar url e retornar, entidade: ";
+        public static string ErrorListGetFileBase64 = "Falha ao pegar arquivos do diretório e disponibilizar url e retorna-los, entidade: ";
+        public static string ErrorGetFileUrl = "Falha ao pegar arquivo do diretório e converter para base64 e retornar, entidade: ";
+        public static string ErrorListGetFileUrl = "Falha ao pegar arquivos do diretório e convertê-los para base64 e retornar, entidade: ";
+    }
+
+
     public static class ConstantsMessagesGenericType
     {
         // Error
