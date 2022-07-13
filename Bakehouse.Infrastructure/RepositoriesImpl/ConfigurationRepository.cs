@@ -26,6 +26,29 @@ namespace Bakehouse.Infrastructure.RepositoriesImpl
             _mapper = mapper;
         }
 
+        public async Task<Result> DeleteByIdAsync(int id)
+        {
+            try
+            {
+                Configuration configSave = await FindByIdAsync(id);
+                if (configSave == null)
+                    return Result.Fail(ConstantsMessageConfiguration.ErrorConfigNotFound);
+
+                configSave.UpdatedAt = DateTime.Now;
+                configSave.DisabledAt = DateTime.Now;
+
+                await _db.SaveChangesAsync();
+
+                return Result.Ok().WithSuccess(configSave.Id.ToString());
+            }
+            catch (Exception ex)
+            {
+                _logService.Write(ex.Message,
+                    ConstantsMessageConfiguration.ErrorDelete, this.GetType().ToString());
+                return Result.Fail(ConstantsMessageConfiguration.ErrorDelete);
+            }
+        }
+
         public async Task<Result> DeleteByTokenAsync(string token)
         {
             try
@@ -34,7 +57,9 @@ namespace Bakehouse.Infrastructure.RepositoriesImpl
                 if (configSave == null)
                     return Result.Fail(ConstantsMessageConfiguration.ErrorConfigNotFound);
 
+                configSave.UpdatedAt = DateTime.Now;
                 configSave.DisabledAt = DateTime.Now;
+
                 await _db.SaveChangesAsync();
 
                 return Result.Ok().WithSuccess(configSave.Id.ToString());
@@ -107,9 +132,13 @@ namespace Bakehouse.Infrastructure.RepositoriesImpl
         {
             try
             {
+                configuration.CreatedAt = DateTime.Now;
+                configuration.UpdatedAt = DateTime.Now;
+
                 _db.Configurations.Add(configuration);
                 await _db.SaveChangesAsync();
-                return Result.Ok();
+
+                return Result.Ok().WithSuccess(configuration.Id.ToString());
             }
             catch (Exception ex)
             {
@@ -127,6 +156,8 @@ namespace Bakehouse.Infrastructure.RepositoriesImpl
 
                 if (save == null)
                     return Result.Fail(ConstantsMessageConfiguration.ErrorConfigNotFound);
+
+                save.UpdatedAt = DateTime.Now;
 
                 _mapper.Map(configuration, save);
                 await _db.SaveChangesAsync();

@@ -1,21 +1,16 @@
 ﻿namespace Bakehouse.Helpers
 {
-    public static class ConstantsMessageBaseRepository
-    {
-        // Error
-        public static string ErrorInsert = "Erro ao inserir um registro na tabela: ";
-        public static string ErrorEdit = "Erro ao editar um registro na tabela: ";
-        public static string ErrorFindAll = "Erro ao buscar dados na tabela: ";
-        public static string ErrorFindById = "Erro ao buscar registro por id na tabela: ";
-        public static string ErrorFindByToken = "Erro ao buscar registro por campo na tabela: ";
-        public static string ErrorDisabled = "Erro ao desabilitar um registro na tabela: ";
-    }
-
     public static class ConstantsEmail
     {
         // Error
         public static string ErrorLoadTemplate = "Erro ao carregar template de email";
         public static string ErrorSendMail = "Erro ao enviar email";
+    }
+
+    public static class ConstantsMessageRequest
+    {
+        // Error
+        public static string ErrorParamNotFound = "Parâmetro não informado na requisição";
     }
 
     public static class ConstantsMessageConfiguration

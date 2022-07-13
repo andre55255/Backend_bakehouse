@@ -36,14 +36,21 @@ namespace Bakehouse.Infrastructure.Data.Seeding
     {
         public void Configure(EntityTypeBuilder<IdentityRole<int>> builder)
         {
-            IdentityRole<int> role = new IdentityRole<int>
+            builder.HasData(new[]
             {
-                Id = 1,
-                Name = "Admin",
-                NormalizedName = "ADMIN"
-            };
-
-            builder.HasData(role);
+                new IdentityRole<int>
+                {
+                    Id = 1,
+                    Name = "Admin",
+                    NormalizedName = "ADMIN"
+                },
+                new IdentityRole<int>
+                {
+                    Id = 2,
+                    Name = "User",
+                    NormalizedName = "USER"
+                }
+            });
         }
     }
 

@@ -23,18 +23,20 @@ namespace Bakehouse.Infrastructure.ServicesImpl
     public class AccountService : IAccountService
     {
         private readonly IApplicationUserRepository _userRepo;
+        private readonly IHttpContextAccessor _httpContext;
         private readonly ISendMailService _sendMailService;
         private readonly IConfiguration _configuration;
         private readonly ILogService _logService;
         private readonly IMapper _mapper;
 
-        public AccountService(ILogService logService, IMapper mapper, IApplicationUserRepository userRepo, ISendMailService sendMailService, IConfiguration configuration)
+        public AccountService(ILogService logService, IMapper mapper, IApplicationUserRepository userRepo, ISendMailService sendMailService, IConfiguration configuration, IHttpContextAccessor httpContext)
         {
             _logService = logService;
             _mapper = mapper;
             _userRepo = userRepo;
             _sendMailService = sendMailService;
             _configuration = configuration;
+            _httpContext = httpContext;
         }
 
         public async Task<Result> ConfirmAccountUser(ConfirmAccountVO model)
@@ -55,7 +57,45 @@ namespace Bakehouse.Infrastructure.ServicesImpl
             }
         }
 
-        public async Task<TokenUserVO> LoginUser(LoginVO userVO, HttpRequest request)
+        public async Task<Result> ForgotPasswordSendMail(ForgotPasswordVO model)
+        {
+            try
+            {
+                ApplicationUser userSave = await _userRepo.FindByEmailAsync(model.Email);
+                if (userSave is null)
+                    return Result.Fail(ConstantsMessageUsers.ErrorUserNotFound);
+
+                string code = await _userRepo.GenerateTokenResetPasswordAsync(userSave);
+                if (string.IsNullOrEmpty(code))
+                    return Result.Fail(ConstantsMessageUsers.ErrorGenerateTokenResetPassword);
+
+                HttpRequest request = _httpContext.HttpContext.Request;
+                string baseUrlApi = $"{request.Scheme}://{request.Host}/{request.PathBase}";
+
+                EmailDataVO emailDataVO = new EmailDataVO
+                {
+                    UserId = userSave.Id,
+                    Path = baseUrlApi,
+                    Email = userSave.Email,
+                    Link = String.Concat(_configuration["SSLURL"] + _configuration["HostedURL"], "/ConfirmEmail/", userSave.Id, "/", code.Replace("//", "TOKEN2F"), code.Replace("+", "PLUS2B"))
+                };
+                Result result = await _sendMailService.SendMailForgotPassword(emailDataVO);
+
+                if (result.IsFailed)
+                    return Result.Fail(ConstantsMessageUsers.ErrorGenerateTokenResetPassword);
+
+                return Result.Ok();
+            }
+            catch (Exception ex)
+            {
+                _logService.Write(ex.Message, ConstantsMessageUsers.FailedResetPassword,
+                    this.GetType().ToString());
+
+                return Result.Fail(ConstantsMessageUsers.FailedResetPassword);
+            }
+        }
+
+        public async Task<TokenUserVO> LoginUser(LoginVO userVO)
         {
             try
             {
@@ -69,22 +109,22 @@ namespace Bakehouse.Infrastructure.ServicesImpl
 
                 if (isEmailConfirmed.Successes.Count > 0 && isEmailConfirmed.Successes.FirstOrDefault().Message == "F")
                 {
-                    await SendEmailConfirmationAccount(user, request);
+                    await SendEmailConfirmationAccount(user);
                     return new TokenUserVO { Error = ConstantsMessageUsers.ErrorUserNotConfirmed };
                 }
 
                 Result loginUser = await _userRepo.SignInUserAsync(user, userVO.Password);
                 if (loginUser.IsSuccess)
                 {
-                    List<string> roleUser = await _userRepo.GetRolesFromUserAsync(user);
+                    List<string> rolesUser = await _userRepo.GetRolesFromUserAsync(user);
 
-                    TokenUserVO token = await CreateTokenJwt(user, roleUser);
+                    TokenUserVO token = await CreateTokenJwt(user, rolesUser);
 
                     if (string.IsNullOrEmpty(token.Value))
                         return new TokenUserVO { Error = ConstantsMessageUsers.ErrorGenerateTokenJwt };
 
                     token.User = _mapper.Map<UserVO>(user);
-                    token.User.Roles = String.Join(',', roleUser);
+                    token.User.Roles = rolesUser;
 
                     return token;
                 }
@@ -164,6 +204,51 @@ namespace Bakehouse.Infrastructure.ServicesImpl
             }
         }
 
+        public async Task<Result> ResetPasswordSignInUser(string idUser, string newPassword)
+        {
+            try
+            {
+                int idUserInt = int.Parse(idUser);
+                ApplicationUser user = await _userRepo.FindByIdAsync(idUserInt);
+                if (user is null)
+                    return Result.Fail(ConstantsMessageUsers.ErrorUserNotFound);
+
+                Result result = await _userRepo.ResetPasswordUserSignedAsync(user, newPassword);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logService.Write(ex.Message, ConstantsMessageUsers.ErrorResetPassword,
+                    this.GetType().ToString());
+
+                return Result.Fail(ConstantsMessageUsers.ErrorResetPassword);
+            }
+        }
+
+        public async Task<Result> ResetPasswordUser(ResetPasswordVO model)
+        {
+            try
+            {
+                ApplicationUser user = await _userRepo.FindByEmailAsync(model.Email);
+                if (user is null)
+                    return Result.Fail(ConstantsMessageUsers.ErrorUserNotFound);
+
+                Result result = await _userRepo.ResetPasswordAsync(user,
+                                                model.Code.Replace("TOKEN2F", "//")
+                                                          .Replace("PLUS2B", "+"),
+                                                model.Password);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logService.Write(ex.Message,
+                   ConstantsMessageUsers.ErrorResetPassword, this.GetType().ToString());
+
+                return Result.Fail(ConstantsMessageUsers.ErrorResetPassword);
+            }
+        }
+
         private async Task<TokenUserVO> CreateTokenJwt(ApplicationUser user, List<string> rolesUser)
         {
             try
@@ -216,18 +301,20 @@ namespace Bakehouse.Infrastructure.ServicesImpl
             }
         }
 
-        private async Task<Result> SendEmailConfirmationAccount(ApplicationUser user, HttpRequest request)
+        private async Task<Result> SendEmailConfirmationAccount(ApplicationUser user)
         {
             try
             {
                 string code = await _userRepo.GenerateTokenConfirmationEmailUserAsync(user);
                 string encodedCode = HttpUtility.UrlEncode(code);
 
+                HttpRequest request = _httpContext.HttpContext.Request;
+                string baseUrlApi = $"{request.Scheme}://{request.Host}";
+
                 Result response = await _sendMailService.SendMailUserConfirmation(new EmailDataVO
                 {
                     UserId = user.Id,
-                    Path = string.Concat(request.Scheme, "://",
-                                         request.Host.ToUriComponent(),
+                    Path = string.Concat(baseUrlApi,
                                          "/Account/ConfirmAccount?UserId=", user.Id,
                                          "&Code=", encodedCode),
                     Email = user.Email,

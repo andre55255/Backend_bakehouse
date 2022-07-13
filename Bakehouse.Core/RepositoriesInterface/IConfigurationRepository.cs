@@ -13,5 +13,6 @@ namespace Bakehouse.Core.RepositoriesInterface
         public Task<Result> InsertAsync(Configuration configuration);
         public Task<Result> UpdateAsync(Configuration configuration);
         public Task<Result> DeleteByTokenAsync(string token);
+        public Task<Result> DeleteByIdAsync(int id);
     }
 }

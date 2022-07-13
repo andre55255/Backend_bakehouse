@@ -7,7 +7,6 @@ using Bakehouse.Helpers;
 using FluentResults;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Bakehouse.Infrastructure.ServicesImpl
@@ -33,10 +32,7 @@ namespace Bakehouse.Infrastructure.ServicesImpl
                 Configuration configSave = _mapper.Map<Configuration>(config);
 
                 Result result = await _configRepo.InsertAsync(configSave);
-                if (result.IsSuccess)
-                    return Result.Ok();
-
-                return Result.Fail(result.Errors.FirstOrDefault().Message);
+                return result;
             }
             catch (Exception ex)
             {
@@ -45,11 +41,15 @@ namespace Bakehouse.Infrastructure.ServicesImpl
             }
         }
 
-        public async Task<Result> DeleteAsync(string token)
+        public async Task<Result> DeleteAsync(int? idConfig, string token)
         {
             try
             {
-                Result result = await _configRepo.DeleteByTokenAsync(token);
+                Result result = null;
+                if (!idConfig.HasValue)
+                    result = await _configRepo.DeleteByTokenAsync(token);
+                else
+                    result = await _configRepo.DeleteByIdAsync(idConfig.Value);
 
                 return result;
             }
@@ -122,11 +122,7 @@ namespace Bakehouse.Infrastructure.ServicesImpl
             {
                 Configuration configEntity = _mapper.Map<Configuration>(config);
                 Result result = await _configRepo.UpdateAsync(configEntity);
-
-                if (result.IsSuccess)
-                    return Result.Ok();
-
-                return Result.Fail(result.Errors.FirstOrDefault().Message);
+                return result;
             }
             catch (Exception ex)
             {

@@ -3,10 +3,12 @@ using Bakehouse.Communication.ViewObjects.Utils;
 using Bakehouse.Core.ServicesInterface;
 using Bakehouse.Helpers;
 using FluentResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Bakehouse.API.Controllers
@@ -34,7 +36,7 @@ namespace Bakehouse.API.Controllers
             APIResponse response = new APIResponse();
             try
             {
-                TokenUserVO result = await _accService.LoginUser(model, Request);
+                TokenUserVO result = await _accService.LoginUser(model);
                 if (string.IsNullOrEmpty(result.Error))
                 {
                     return StatusCode(StatusCodes.Status202Accepted, new
@@ -128,6 +130,117 @@ namespace Bakehouse.API.Controllers
 
                 response.Success = false;
                 response.Message = ConstantsMessageUsers.ErrorErrorConfirmEmail;
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
+
+        /// <summary>
+        /// ForgotPassword - Método que faz a requisição para recuperação de senha, informar dados no body
+        /// </summary>
+        [HttpPost]
+        [Route("ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordVO model)
+        {
+            APIResponse response = new APIResponse();
+            try
+            {
+                Result result = await _accService.ForgotPasswordSendMail(model);
+                if (result.IsFailed)
+                {
+                    response.Success = false;
+                    response.Message = result.Errors.FirstOrDefault().Message;
+
+                    return StatusCode(StatusCodes.Status400BadRequest, response);
+                }
+                response.Success = true;
+                response.Message = ConstantsMessageUsers.SuccessSendMailResetPassword;
+
+                return StatusCode(StatusCodes.Status200OK, response);
+            }
+            catch (Exception ex)
+            {
+                _logService.Write(ex.Message,
+                    ConstantsMessageUsers.FailedResetPassword, this.GetType().ToString());
+
+                response.Success = false;
+                response.Message = ConstantsMessageUsers.FailedResetPassword;
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
+
+        /// <summary>
+        /// ResetPassword - Método que reseta a senha do usuário, informar dado pelo body
+        /// </summary>
+        [HttpPost]
+        [Route("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordVO model)
+        {
+            APIResponse response = new APIResponse();
+            try
+            {
+                Result result = await _accService.ResetPasswordUser(model);
+                if (result.IsFailed)
+                {
+                    response.Success = false;
+                    response.Message = ConstantsMessageUsers.FailedResetPassword;
+
+                    return StatusCode(StatusCodes.Status400BadRequest, response);
+                }
+                response.Success = true;
+                response.Message = ConstantsMessageUsers.SuccessResetPassword;
+
+                return StatusCode(StatusCodes.Status200OK, response);
+            }
+            catch (Exception ex)
+            {
+                _logService.Write(ex.Message,
+                    ConstantsMessageUsers.FailedResetPassword, this.GetType().ToString());
+
+                response.Success = false;
+                response.Message = ConstantsMessageUsers.FailedResetPassword;
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
+
+        /// <summary>
+        /// ResetPasswordSignIn - Método que reseta a senha do usuário logado atualmente
+        /// </summary>
+        [Authorize]
+        [HttpPost]
+        [Route("ResetPasswordSignIn")]
+        public async Task<IActionResult> ResetPasswordSignIn([FromBody] ResetPasswordSignInVO model)
+        {
+            APIResponse response = new APIResponse();
+            try
+            {
+                Claim idUser = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (idUser is null || string.IsNullOrEmpty(idUser.Value))
+                {
+                    response.Success = false;
+                    response.Message = ConstantsMessageUsers.ErrorUserNotFound;
+
+                    return StatusCode(StatusCodes.Status400BadRequest, response);
+                }
+                Result result = await _accService.ResetPasswordSignInUser(idUser.Value, model.NewPassword);
+                if (result.IsFailed)
+                {
+                    response.Success = false;
+                    response.Message = result.Errors.FirstOrDefault().Message;
+
+                    return StatusCode(StatusCodes.Status400BadRequest, response);
+                }
+                response.Success = true;
+                response.Message = ConstantsMessageUsers.SuccessResetPassword;
+
+                return StatusCode(StatusCodes.Status200OK, response);
+            }
+            catch (Exception ex)
+            {
+                _logService.Write(ex.Message,
+                    ConstantsMessageUsers.ErrorResetPassword, this.GetType().ToString());
+
+                response.Success = false;
+                response.Message = ConstantsMessageUsers.ErrorResetPassword;
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
         }

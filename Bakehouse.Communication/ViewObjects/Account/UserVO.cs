@@ -1,4 +1,6 @@
-﻿namespace Bakehouse.Communication.ViewObjects.Account
+﻿using System.Collections.Generic;
+
+namespace Bakehouse.Communication.ViewObjects.Account
 {
     public class UserVO
     {
@@ -8,7 +10,7 @@
         public string FullName { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
-        public string Roles { get; set; }
+        public List<string> Roles { get; set; }
         public string Contact { get; set; }
     }
 }

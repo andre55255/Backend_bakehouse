@@ -12,4 +12,8 @@
     <ProjectReference Include="..\Bakehouse.Infrastructure\Bakehouse.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Directory\" />
+  </ItemGroup>
+
 </Project>

@@ -9,7 +9,7 @@ namespace Bakehouse.Core.ServicesInterface
     public interface IConfigurationService
     {
         public Task<Result> CreateAsync(ConfigurationVO config);
-        public Task<Result> DeleteAsync(string token);
+        public Task<Result> DeleteAsync(int? idConfig, string token);
         public Task<Result> UpdateByTokenAsync(ConfigurationVO config);
         public Task<List<ConfigurationVO>> FindAllAsync();
         public Task<ConfigurationVO> FindByTokenAsync(string token);
