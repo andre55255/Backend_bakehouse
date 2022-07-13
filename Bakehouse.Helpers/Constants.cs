@@ -78,6 +78,7 @@
         public static string ErrorCreateUserDB = "Erro ao criar usuário identity no banco de dados";
         public static string ErrorAddRoleToUser = "Erro ao adicionar role para usuário: ";
         public static string ErrorUserEmailExists = "Erro, email já existe na base de dados";
+        public static string ErrorUserNameExists = "Erro, username já existe na base de dados";
         public static string ErrorGetById = "Erro ao buscar usuário por id";
         public static string ErrorActiveUser = "Erro ao realizar confirmação de conta por email de usuario";
         public static string ErrorSendEmail = "Erro ao enviar email";

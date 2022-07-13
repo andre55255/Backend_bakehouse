@@ -13,6 +13,8 @@ namespace Bakehouse.API.Extensions
             services.AddScoped<IGenericTypeService, GenericTypeService>();
             services.AddScoped<ILogService, LogService>();
             services.AddScoped<ISendMailService, SendMailService>();
+            services.AddScoped<IUniqueFileService, UniqueFileService>();
+            services.AddScoped<IUserService, UserService>();
 
             return services;
         }

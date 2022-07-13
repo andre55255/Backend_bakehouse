@@ -12,6 +12,14 @@ namespace Bakehouse.Core.Profiles
                 .ForMember(x => x.FullName, x => x.MapFrom(x => x.Name + " " + x.LastName))
                 .ForMember(x => x.Contact, x => x.MapFrom(x => x.PhoneNumber))
                 .ReverseMap();
+
+            CreateMap<ApplicationUser, SaveUserVO>()
+                .ForMember(x => x.Contact, x => x.MapFrom(x => x.PhoneNumber))
+                .ReverseMap();
+
+            CreateMap<ApplicationUser, UpdateUserVO>()
+                .ForMember(x => x.Contact, x => x.MapFrom(x => x.PhoneNumber))
+                .ReverseMap();
         }
     }
 }

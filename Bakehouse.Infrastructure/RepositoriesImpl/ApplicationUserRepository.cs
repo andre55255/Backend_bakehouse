@@ -123,6 +123,7 @@ namespace Bakehouse.Infrastructure.RepositoriesImpl
             try
             {
                 ApplicationUser save = await FindByIdAsync(user.Id);
+                save.UpdatedAt = DateTime.Now;
                 save.DisabledAt = DateTime.Now;
 
                 IdentityResult result = await _signInManager
@@ -450,7 +451,7 @@ namespace Bakehouse.Infrastructure.RepositoriesImpl
             }
         }
 
-        public async Task<Result> UpdateUserAsync(ApplicationUser user)
+        public async Task<Result> UpdateUserAsync(ApplicationUser user, List<string> roles)
         {
             try
             {
@@ -458,6 +459,7 @@ namespace Bakehouse.Infrastructure.RepositoriesImpl
                 userSave.Name = user.Name;
                 userSave.LastName = user.LastName;
                 userSave.PhoneNumber = user.PhoneNumber;
+                userSave.UpdatedAt = DateTime.Now;
 
                 IdentityResult updateResult = await _signInManager
                                                         .UserManager
@@ -474,7 +476,7 @@ namespace Bakehouse.Infrastructure.RepositoriesImpl
                 if (!removeRolesResult.Succeeded)
                     return Result.Fail(ConstantsMessageUsers.ErrorRemoveRolesByUser);
 
-                foreach (string role in rolesUser)
+                foreach (string role in roles)
                 {
                     IdentityResult resultAddRoleToUser = await _signInManager
                                                                     .UserManager

@@ -23,7 +23,7 @@ namespace Bakehouse.Core.RepositoriesInterface
         public Task<Result> CreateUserDbAsync(ApplicationUser user, List<string> roles);
         public Task<Result> ConfirmEmailAsync(ConfirmAccountVO model);
         public Task<ApplicationUser> FindByIdAsync(int id);
-        public Task<Result> UpdateUserAsync(ApplicationUser user);
+        public Task<Result> UpdateUserAsync(ApplicationUser user, List<string> roles);
         public Task<Result> DisableUserAsync(ApplicationUser user);
         public Task<List<ApplicationUser>> GetAllUsersAsync();
         public Task<List<IdentityRole<int>>> GetAllRolesAsync();
