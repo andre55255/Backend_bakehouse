@@ -1,4 +1,5 @@
 ﻿using Bakehouse.Communication.ViewObjects.Account;
+using Bakehouse.Communication.ViewObjects.Utils;
 using FluentResults;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -16,5 +17,7 @@ namespace Bakehouse.Core.ServicesInterface
         public Task<List<UserVO>> GetAllAsync();
 
         public Task<Result> DeleteAsync(int id);
+
+        public Task<List<SelectObjectVO>> GetRolesAsSelectObject();
     }
 }

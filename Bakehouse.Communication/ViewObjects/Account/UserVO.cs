@@ -19,6 +19,9 @@ namespace Bakehouse.Communication.ViewObjects.Account
 
     public class UpdateUserVO
     {
+        [Required(ErrorMessage = "Id não informado")]
+        public int Id { get; set; }
+
         [Required(ErrorMessage = "Nome não informado")]
         [StringLength(255, ErrorMessage = "Nome deve ter entre 3 e 255 caracteres", MinimumLength = 3)]
         public string Name { get; set; }
@@ -33,6 +36,12 @@ namespace Bakehouse.Communication.ViewObjects.Account
         public string Contact { get; set; }
 
         public FileVO ProfileImage { get; set; }
+    }
+
+    public class PrepareUserVO
+    {
+        public List<SelectObjectVO> Roles { get; set; }
+        public UserVO User { get; set; }
     }
 
     public class SaveUserVO
@@ -54,6 +63,10 @@ namespace Bakehouse.Communication.ViewObjects.Account
         [Required(ErrorMessage = "Email não informado")]
         [EmailAddress(ErrorMessage = "Email inválido")]
         public string Email { get; set; }
+
+        [Required(ErrorMessage = "Senha não informada")]
+        [StringLength(35, ErrorMessage = "Username deve ter entre 6 e 35 caracteres", MinimumLength = 6)]
+        public string Password { get; set; }
 
         [Required(ErrorMessage = "Perfis/Roles não informados")]
         public List<string> Roles { get; set; }

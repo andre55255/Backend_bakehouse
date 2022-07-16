@@ -6,6 +6,7 @@ using Bakehouse.Core.RepositoriesInterface;
 using Bakehouse.Core.ServicesInterface;
 using Bakehouse.Helpers;
 using FluentResults;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,16 +17,16 @@ namespace Bakehouse.Infrastructure.ServicesImpl
     public class UserService : IUserService
     {
         private readonly IApplicationUserRepository _userRepo;
-        private readonly IUniqueFileService _uniqueFileService;
+        private readonly IFileUniqueService _fileUniqueService;
         private readonly ILogService _logService;
         private readonly IMapper _mapper;
 
-        public UserService(IApplicationUserRepository userRepo, ILogService logService, IMapper mapper, IUniqueFileService uniqueFileService)
+        public UserService(IApplicationUserRepository userRepo, ILogService logService, IMapper mapper, IFileUniqueService fileUniqueService)
         {
             _userRepo = userRepo;
             _logService = logService;
             _mapper = mapper;
-            _uniqueFileService = uniqueFileService;
+            _fileUniqueService = fileUniqueService;
         }
 
         public async Task<Result> CreateAsync(SaveUserVO userVO)
@@ -48,14 +49,15 @@ namespace Bakehouse.Infrastructure.ServicesImpl
 
                 string idCreated = resultCreated.Successes.FirstOrDefault().Message;
                 if (userVO.ProfileImage is not null &&
-                    string.IsNullOrEmpty(userVO.ProfileImage.File) &&
+                    !string.IsNullOrEmpty(userVO.ProfileImage.File) &&
                     idCreated is not null)
                 {
+                    userVO.ProfileImage.Name = "Profile";
+
                     Result resultSaveProfileImage =
-                        _uniqueFileService.SaveOneFileBase64(userVO.ProfileImage.File,
+                        _fileUniqueService.SaveFileBase64AtDirectory(userVO.ProfileImage,
                                                              "ApplicationUser",
-                                                             idCreated,
-                                                             "Profile");
+                                                             idCreated);
 
                     if (resultSaveProfileImage.IsFailed)
                         return resultSaveProfileImage;
@@ -112,11 +114,11 @@ namespace Bakehouse.Infrastructure.ServicesImpl
                     user.Roles = rolesUser;
 
                     FileVO profileImg =
-                        _uniqueFileService.GetOneFileUrl("ApplicationUser", user.Id.ToString(), "Profile");
+                        _fileUniqueService.GetFileUrlAtDirectory("ApplicationUser", user.Id.ToString(), "Profile");
 
                     if (profileImg is null)
                         profileImg =
-                            _uniqueFileService.GetOneFileUrl("ApplicationUser", user.Id.ToString(), "profile_default", true);
+                            _fileUniqueService.GetFileUrlAtDirectory("ApplicationUser", user.Id.ToString(), "profile_default", true);
 
                     user.ProfileImage = profileImg;
                 }
@@ -144,11 +146,11 @@ namespace Bakehouse.Infrastructure.ServicesImpl
                 UserVO response = _mapper.Map<UserVO>(userSave);
 
                 FileVO profileImg =
-                        _uniqueFileService.GetOneFileUrl("ApplicationUser", userSave.Id.ToString(), "Profile");
+                        _fileUniqueService.GetFileUrlAtDirectory("ApplicationUser", userSave.Id.ToString(), "Profile");
 
                 if (profileImg is null)
                     profileImg =
-                        _uniqueFileService.GetOneFileUrl("ApplicationUser", userSave.Id.ToString(), "profile_default", true);
+                        _fileUniqueService.GetFileUrlAtDirectory("ApplicationUser", userSave.Id.ToString(), "profile_default", true);
 
                 response.ProfileImage = profileImg;
 
@@ -167,10 +169,32 @@ namespace Bakehouse.Infrastructure.ServicesImpl
             }
         }
 
+        public async Task<List<SelectObjectVO>> GetRolesAsSelectObject()
+        {
+            try
+            {
+                List<IdentityRole<int>> roles = await _userRepo.GetAllRolesAsync();
+                List<SelectObjectVO> response = _mapper.Map<List<SelectObjectVO>>(roles);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logService.Write(ex.Message,
+                    ConstantsMessageUsers.ErrorFindAllRoles,
+                    this.GetType().ToString());
+
+                return null;
+            }
+        }
+
         public async Task<Result> UpdateAsync(UpdateUserVO userVO)
         {
             try
             {
+                ApplicationUser userExist = await _userRepo.FindByIdAsync(userVO.Id);
+                if (userExist is null)
+                    return Result.Fail(ConstantsMessageUsers.ErrorUserNotFound);
+
                 ApplicationUser userSave = _mapper.Map<ApplicationUser>(userVO);
 
                 Result resultEdit = await _userRepo.UpdateUserAsync(userSave, userVO.Roles);
@@ -182,20 +206,21 @@ namespace Bakehouse.Infrastructure.ServicesImpl
                     userVO.ProfileImage.Disable)
                 {
                     Result resultDeleteProfileImg =
-                        _uniqueFileService.DeleteOneFile("ApplicationUser", idEdited, "Profile");
+                        _fileUniqueService.DeleteFileAtDirectory("ApplicationUser", idEdited, "Profile");
 
                     if (resultDeleteProfileImg.IsFailed)
                         return resultDeleteProfileImg;
                 }
                 else if (userVO.ProfileImage is not null &&
-                    string.IsNullOrEmpty(userVO.ProfileImage.File) &&
+                    !string.IsNullOrEmpty(userVO.ProfileImage.File) &&
                     idEdited is not null)
                 {
+                    userVO.ProfileImage.Name = "Profile";
+
                     Result resultSaveProfileImage =
-                        _uniqueFileService.SaveOneFileBase64(userVO.ProfileImage.File,
+                        _fileUniqueService.SaveFileBase64AtDirectory(userVO.ProfileImage,
                                                              "ApplicationUser",
-                                                             idEdited,
-                                                             "Profile");
+                                                             idEdited);
 
                     if (resultSaveProfileImage.IsFailed)
                         return resultSaveProfileImage;

@@ -178,7 +178,7 @@ namespace Bakehouse.API.Controllers
         /// <summary>
         /// Delete - Método que desabilita um GenericType no banco de dados, informar parametro na query ?id=int
         /// </summary>
-        [HttpPost]
+        [HttpDelete]
         [Route("Delete")]
         public async Task<IActionResult> DeleteGenericType([FromQuery] int? id)
         {
