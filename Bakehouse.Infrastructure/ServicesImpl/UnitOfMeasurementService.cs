@@ -127,6 +127,12 @@ namespace Bakehouse.Infrastructure.ServicesImpl
                 unitOfMeas.Description = unitOfMeas.Description.ToUpper();
                 UnitOfMeasurement unitOfMeasEntity = _mapper.Map<UnitOfMeasurement>(unitOfMeas);
 
+                UnitOfMeasurement unitOfMeasNameExist =
+                    await _unitOfMeasRepo.FindByDescriptionAsync(unitOfMeas.Description);
+                
+                if (unitOfMeasNameExist is not null)
+                    return Result.Fail(ConstantsMessageCategory.ErrorNameExists);
+
                 Result result = await _unitOfMeasRepo.UpdateAsync(unitOfMeasEntity);
                 return result;
             }

@@ -88,6 +88,26 @@ namespace Bakehouse.Infrastructure.RepositoriesImpl
             }
         }
 
+        public async Task<UnitOfMeasurement> FindByDescriptionAsync(string description)
+        {
+            try
+            {
+                UnitOfMeasurement unitOfMeasurement = await _db.UnitOfMeasurements
+                                                               .Where(x => x.Description == description && 
+                                                                           x.DisabledAt == null)
+                                                               .FirstOrDefaultAsync();
+
+                return unitOfMeasurement;
+            }
+            catch (Exception ex)
+            {
+                _logService.Write(ex.Message, ConstantsMessageUnitOfMeasurement.ErrorFindByName,
+                    this.GetType().ToString());
+
+                return null;
+            }
+        }
+
         public async Task<UnitOfMeasurement> FindByIdAsync(int id)
         {
             try
@@ -111,6 +131,15 @@ namespace Bakehouse.Infrastructure.RepositoriesImpl
         {
             try
             {
+                UnitOfMeasurement unitOfMeasWithNameExist = 
+                    await _db.UnitOfMeasurements
+                             .Where(x => x.Description == unitOfMeas.Description &&
+                                         x.DisabledAt == null)
+                             .FirstOrDefaultAsync();
+
+                if (unitOfMeasWithNameExist is not null)
+                    return Result.Fail(ConstantsMessageUnitOfMeasurement.ErrorNameExists);
+
                 unitOfMeas.Id = 0;
                 unitOfMeas.CreatedAt = DateTime.Now;
                 unitOfMeas.UpdatedAt = DateTime.Now;

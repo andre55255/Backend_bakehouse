@@ -88,6 +88,26 @@ namespace Bakehouse.Infrastructure.RepositoriesImpl
             }
         }
 
+        public async Task<Category> FindByDescriptionAsync(string description)
+        {
+            try
+            {
+                Category category = await _db.Categories
+                                             .Where(x => x.Description == description && 
+                                                         x.DisabledAt == null)
+                                             .FirstOrDefaultAsync();
+
+                return category;
+            }
+            catch (Exception ex)
+            {
+                _logService.Write(ex.Message, ConstantsMessageCategory.ErrorFindByName,
+                    this.GetType().ToString());
+
+                return null;
+            }
+        }
+
         public async Task<Category> FindByIdAsync(int id)
         {
             try
@@ -111,6 +131,14 @@ namespace Bakehouse.Infrastructure.RepositoriesImpl
         {
             try
             {
+                Category catWithNameExist = await _db.Categories
+                                                     .Where(x => x.Description == category.Description &&
+                                                                 x.DisabledAt == null)
+                                                     .FirstOrDefaultAsync();
+
+                if (catWithNameExist is not null)
+                    return Result.Fail(ConstantsMessageUnitOfMeasurement.ErrorNameExists);
+
                 category.Id = 0;
                 category.CreatedAt = DateTime.Now;
                 category.UpdatedAt = DateTime.Now;

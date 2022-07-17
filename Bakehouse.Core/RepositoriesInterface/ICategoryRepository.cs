@@ -9,6 +9,7 @@ namespace Bakehouse.Core.RepositoriesInterface
     {
         public Task<List<Category>> FindAllAsync();
         public Task<Category> FindByIdAsync(int id);
+        public Task<Category> FindByDescriptionAsync(string description);
         public Task<Result> InsertAsync(Category category);
         public Task<Result> UpdateAsync(Category category);
         public Task<Result> DeleteAsync(int id);

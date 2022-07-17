@@ -125,6 +125,10 @@ namespace Bakehouse.Infrastructure.ServicesImpl
                 category.Description = category.Description.ToUpper();
                 Category categoryEntity = _mapper.Map<Category>(category);
 
+                Category catNameExist = await _catRepo.FindByDescriptionAsync(category.Description);
+                if (catNameExist is not null)
+                    return Result.Fail(ConstantsMessageCategory.ErrorNameExists);
+
                 Result result = await _catRepo.UpdateAsync(categoryEntity);
                 return result;
             }

@@ -80,9 +80,10 @@
         // Error
         public static string ErrorFindAll = "Erro ao buscar lista de unidades de medida no banco de dados";
         public static string ErrorFindById = "Erro ao buscar unidade de medida por id no banco de dados";
+        public static string ErrorFindByName = "Erro ao buscar unidade de medida por nome no banco de dados";
         public static string ErrorInsert = "Erro ao inserir nova unidade de medida no banco de dados";
         public static string ErrorSave = "Erro ao salvar unidade de medida";
-        public static string ErrorNameExists = "Erro ao inserir nova unidade de medida, já existe uma unidade de medida com este nome";
+        public static string ErrorNameExists = "Erro ao inserir nova unidade de medida, já existe uma unidade de medida com esta descrição";
         public static string ErrorNotFound = "Erro, não encontrada uma unidade de medida com este token";
         public static string ErrorUpdate = "Erro ao atualizar unidade de medida no banco de dados";
         public static string ErrorDelete = "Erro ao desabilitar unidade de medida no banco de dados";
@@ -101,9 +102,10 @@
         // Error
         public static string ErrorFindAll = "Erro ao buscar lista de categorias no banco de dados";
         public static string ErrorFindById = "Erro ao buscar categoria por id no banco de dados";
+        public static string ErrorFindByName = "Erro ao buscar categoria por nome no banco de dados";
         public static string ErrorInsert = "Erro ao inserir nova categoria no banco de dados";
         public static string ErrorSave = "Erro ao salvar categoria";
-        public static string ErrorNameExists = "Erro ao inserir nova categoria, já existe uma categoria com este nome";
+        public static string ErrorNameExists = "Erro ao inserir nova categoria, já existe uma categoria com esta descrição";
         public static string ErrorNotFound = "Erro, não encontrada uma categoria com este token";
         public static string ErrorUpdate = "Erro ao atualizar categoria no banco de dados";
         public static string ErrorDelete = "Erro ao desabilitar categoria no banco de dados";
