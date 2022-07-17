@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bakehouse.Core.Entities
 {
@@ -10,5 +11,8 @@ namespace Bakehouse.Core.Entities
         public string Token { get; set; }
         public string Description { get; set; }
         public decimal? Value { get; set; }
+
+        // Props navigation
+        public virtual List<Movement> Movements { get; set; }
     }
 }

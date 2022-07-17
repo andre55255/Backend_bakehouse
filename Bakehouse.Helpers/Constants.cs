@@ -75,6 +75,48 @@
         public static string SuccessDelete = "Configuração deletada com sucesso";
     }
 
+    public static class ConstantsMessageUnitOfMeasurement
+    {
+        // Error
+        public static string ErrorFindAll = "Erro ao buscar lista de unidades de medida no banco de dados";
+        public static string ErrorFindById = "Erro ao buscar unidade de medida por id no banco de dados";
+        public static string ErrorInsert = "Erro ao inserir nova unidade de medida no banco de dados";
+        public static string ErrorSave = "Erro ao salvar unidade de medida";
+        public static string ErrorNameExists = "Erro ao inserir nova unidade de medida, já existe uma unidade de medida com este nome";
+        public static string ErrorNotFound = "Erro, não encontrada uma unidade de medida com este token";
+        public static string ErrorUpdate = "Erro ao atualizar unidade de medida no banco de dados";
+        public static string ErrorDelete = "Erro ao desabilitar unidade de medida no banco de dados";
+        public static string ErrorVerifyExistProductWithCategory = "Erro ao verificar se existe produto com esta unidade de medida";
+        public static string ErrorExistProductWithCategory = "Ops, existe algum produto com esta unidade de medida. Não é possível excluí-la";
+        public static string ErrorTypeDbEmpty = "Não há nenhuma unidade de medida registrada no banco de dados";
+
+        // Success
+        public static string SuccessInsert = "Unidade de medida salva com sucesso";
+        public static string SuccessUpdate = "Unidade de medida atualizada com sucesso";
+        public static string SuccessDelete = "Unidade de medida deletada com sucesso";
+    }
+
+    public static class ConstantsMessageCategory
+    {
+        // Error
+        public static string ErrorFindAll = "Erro ao buscar lista de categorias no banco de dados";
+        public static string ErrorFindById = "Erro ao buscar categoria por id no banco de dados";
+        public static string ErrorInsert = "Erro ao inserir nova categoria no banco de dados";
+        public static string ErrorSave = "Erro ao salvar categoria";
+        public static string ErrorNameExists = "Erro ao inserir nova categoria, já existe uma categoria com este nome";
+        public static string ErrorNotFound = "Erro, não encontrada uma categoria com este token";
+        public static string ErrorUpdate = "Erro ao atualizar categoria no banco de dados";
+        public static string ErrorDelete = "Erro ao desabilitar categoria no banco de dados";
+        public static string ErrorVerifyExistProductWithCategory = "Erro ao verificar se existe produto com esta categoria";
+        public static string ErrorExistProductWithCategory = "Ops, existe algum produto com esta categoria. Não é possível excluí-la";
+        public static string ErrorTypeDbEmpty = "Não há nenhuma categoria registrada no banco de dados";
+
+        // Success
+        public static string SuccessInsert = "Categoria salva com sucesso";
+        public static string SuccessUpdate = "Categoria atualizada com sucesso";
+        public static string SuccessDelete = "Categoria deletada com sucesso";
+    }
+
     public static class ConstantsMessageUsers
     {
         // Error

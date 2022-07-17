@@ -3,6 +3,7 @@ using Bakehouse.Communication.ViewObjects.Utils;
 using Bakehouse.Core.ServicesInterface;
 using Bakehouse.Helpers;
 using FluentResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -28,6 +29,7 @@ namespace Bakehouse.API.Controllers
         /// <summary>
         /// Save - Método que cria/edita um genericType no banco de dados, enviar dados no body (Informar id=-1 para cadastro e o id do genericType para editar)
         /// </summary>
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [Route("Save")]
         public async Task<IActionResult> SaveGenericType([FromBody] GenericTypeVO genericTypeVO)
@@ -99,6 +101,7 @@ namespace Bakehouse.API.Controllers
         /// <summary>
         /// GetById - Método que retorna um GenericType por id no banco de dados, informar parametro na query ?id=int
         /// </summary>
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("GetById")]
         public async Task<IActionResult> GetByIdGenericType([FromQuery] int? id)
@@ -141,6 +144,7 @@ namespace Bakehouse.API.Controllers
         /// <summary>
         /// GetAll - Método que retorna todos os GenericType do banco de dados, sem parametros
         /// </summary>
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("GetAll")]
         public async Task<IActionResult> GetAllGenericType()
@@ -178,6 +182,7 @@ namespace Bakehouse.API.Controllers
         /// <summary>
         /// Delete - Método que desabilita um GenericType no banco de dados, informar parametro na query ?id=int
         /// </summary>
+        [Authorize(Roles = "Admin")]
         [HttpDelete]
         [Route("Delete")]
         public async Task<IActionResult> DeleteGenericType([FromQuery] int? id)
